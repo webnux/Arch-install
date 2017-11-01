@@ -25,7 +25,7 @@ Note you can see at the begining of the 03-* scripts which 02-* scripts should b
 
 ```sh
 loadkeys fr
-dhcpcd
+dhcpcd # of wifi-menu
 systemctl start sshd
 passwd 
 ```
