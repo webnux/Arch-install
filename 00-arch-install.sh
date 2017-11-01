@@ -19,12 +19,13 @@ then
 	memSwap=4096
 fi
 endPart=$((memSwap+100))
-device=
+
+device=/dev/nvme0n1
+
 fdisk -l
-while [[ ! -b $device ]]; do
-  read -p "Type your device path (e.g. /dev/sda): " -e device
-done
+
 echo -e "\033[0;31m/!\ Warning : $device will be totally erased !\033[0m"
+
 while ! ([[ "$go" == "y" ]] || [[ "$go" == "n" ]]); do
  read -p "Are you sure to continue ? (y/n): " -e go
 done
@@ -34,21 +35,34 @@ fi
  
 # make 2 partitions on the disk.
 echo -n "Partitioning ... "
-parted -s ${device} mktable gpt
-parted -s ${device} mkpart primary 0% 100m
-parted -s ${device} mkpart primary 100m ${endPart}m
-parted -s ${device} mkpart primary ${endPart}m 100%
+parted -s ${device} mklabel gpt
+parted -s ${device} mkpart ESP fat32 1MiB 513MiB
+parted -s ${device} set 1 boot on
+parted -s ${device} mkpart primary ext4 513MiB 100%
 partprobe ${device}
 echo "OK"
 
 # make filesystems
 echo -n "Creating file system ... "
 # /boot
-mkfs.ext4 -Fv '-O ^64bit' ${device}p1 
-# swap
-mkswap ${device}p2 
-# /
-mkfs.ext4 -Fv ${device}p3 
+mkfs.fat -F32 ${device}p1 
+
+# crypt data partition
+cryptsetup -c aes-xts-plain64 -y --use-random luksFormat /dev/${device}p2
+cryptsetup luksOpen /dev/${device}p2 luks
+
+# manage partitions with LVM
+pvcreate /dev/mapper/luks
+vgcreate vg0 /dev/mapper/luks
+lvcreate --size 8G vg0 --name swap
+lvcreate -l +100%FREE vg0 --name root
+mkfs.ext4 /dev/mapper/vg0-root
+mkswap /dev/mapper/vg0-swap
+mount /dev/mapper/vg0-root /mnt
+swapon /dev/mapper/vg0-swap
+mkdir /mnt/boot
+mount /dev/${device}p1 /mnt/boot
+
 echo "OK"
 
 # set up /mnt
