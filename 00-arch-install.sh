@@ -48,8 +48,8 @@ echo -n "Creating file system ... "
 mkfs.fat -F32 ${device}p1 
 
 # crypt data partition
-cryptsetup -c aes-xts-plain64 -y --use-random luksFormat /dev/${device}p2
-cryptsetup luksOpen /dev/${device}p2 luks
+cryptsetup -c aes-xts-plain64 -y --use-random luksFormat ${device}p2
+cryptsetup luksOpen ${device}p2 luks
 
 # manage partitions with LVM
 pvcreate /dev/mapper/luks
@@ -61,7 +61,7 @@ mkswap /dev/mapper/vg0-swap
 mount /dev/mapper/vg0-root /mnt
 swapon /dev/mapper/vg0-swap
 mkdir /mnt/boot
-mount /dev/${device}p1 /mnt/boot
+mount ${device}p1 /mnt/boot
 
 echo "OK"
  
