@@ -35,7 +35,7 @@ passwd
 ```sh
 pacman -Syy
 pacman -S wget unzip
-wget https://github.com/xp-1000/Arch-install/archive/master.zip
+wget https://github.com/webnux/Arch-install/archive/master.zip
 unzip master.zip
 cd Arch-install-master
 bash 00-arch-install.sh && reboot
