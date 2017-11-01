@@ -64,18 +64,9 @@ mkdir /mnt/boot
 mount /dev/${device}p1 /mnt/boot
 
 echo "OK"
-
-# set up /mnt
-echo -n "Mounting partitions ... "
-mount ${device}p3 /mnt
-mkdir /mnt/boot
-mount ${device}p1 /mnt/boot
-# set up swap
-swapon ${device}p2
-echo "OK"
  
-uuid=$(blkid -o value -s UUID ${device}p3)
-uuidSwap=$(blkid -o value -s UUID ${device}p2)
+#uuid=$(blkid -o value -s UUID ${device}p3)
+#uuidSwap=$(blkid -o value -s UUID ${device}p2)
 
 # Update database
 echo "Updating repository database ... "
