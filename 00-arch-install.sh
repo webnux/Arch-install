@@ -44,24 +44,24 @@ echo "OK"
 # make filesystems
 echo -n "Creating file system ... "
 # /boot
-mkfs.ext4 -Fv '-O ^64bit' ${device}1 
+mkfs.ext4 -Fv '-O ^64bit' ${device}p1 
 # swap
-mkswap ${device}2 
+mkswap ${device}p2 
 # /
-mkfs.ext4 -Fv ${device}3 
+mkfs.ext4 -Fv ${device}p3 
 echo "OK"
 
 # set up /mnt
 echo -n "Mounting partitions ... "
-mount ${device}3 /mnt
+mount ${device}p3 /mnt
 mkdir /mnt/boot
-mount ${device}1 /mnt/boot
+mount ${device}p1 /mnt/boot
 # set up swap
-swapon ${device}2
+swapon ${device}p2
 echo "OK"
  
-uuid=$(blkid -o value -s UUID ${device}3)
-uuidSwap=$(blkid -o value -s UUID ${device}2)
+uuid=$(blkid -o value -s UUID ${device}p3)
+uuidSwap=$(blkid -o value -s UUID ${device}p2)
 
 # Update database
 echo "Updating repository database ... "
@@ -169,7 +169,7 @@ fi
  
 # unmount
 umount /mnt/{boot,}
-swapoff ${device}2
+swapoff ${device}p2
 
 # Set Flag boot BIOS for GTP
 sgdisk ${device} --attributes=:1:set:2
