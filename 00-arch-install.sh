@@ -119,6 +119,8 @@ echo 'LANG="fr_FR.UTF-8"' > /etc/locale.conf
 echo "KEYMAP=fr-pc" > /etc/vconsole.conf
 
 # no modifications to mkinitcpio.conf should be needed
+
+sed -i 's/MODULES=""/MODULES="nvme"/' /etc/mkinitcpio.conf
 mkinitcpio -p linux
  
 # install syslinux bootloader
