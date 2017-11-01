@@ -87,7 +87,7 @@ pacstrap /mnt base base-devel
 # install syslinux
 #arch-chroot /mnt pacman -S syslinux --noconfirm
 echo "Installing Syslinux bootloader ... "
-pacstrap /mnt syslinux
+# pacstrap /mnt syslinux
  
 # copy ranked mirrorlist over
 cp /etc/pacman.d/mirrorlist* /mnt/etc/pacman.d
@@ -120,15 +120,15 @@ echo "KEYMAP=fr-pc" > /etc/vconsole.conf
 
 # no modifications to mkinitcpio.conf should be needed
 
-sed -i 's/MODULES=""/MODULES="nvme"/' /etc/mkinitcpio.conf
-mkinitcpio -p linux
+#sed -i 's/MODULES=""/MODULES="nvme"/' /etc/mkinitcpio.conf
+#mkinitcpio -p linux
  
 # install syslinux bootloader
-pacman -S --noconfirm gptfdisk
-syslinux-install_update -i -a -m 2> /dev/null
+#pacman -S --noconfirm gptfdisk
+#syslinux-install_update -i -a -m 2> /dev/null
  
 # update syslinux config with correct root diskyaou				
-sed -i "s/root=.*/root=UUID=${uuid} resume=UUID=${uuidSwap} rw/g" /boot/syslinux/syslinux.cfg
+#sed -i "s/root=.*/root=UUID=${uuid} resume=UUID=${uuidSwap} rw/g" /boot/syslinux/syslinux.cfg
 
 #cp /usr/lib/syslinux/menu.c32 /boot/syslinux
 #cp /usr/lib/syslinux/hdt.c32 /boot/syslinux
@@ -170,12 +170,15 @@ if [[ $wifi == "y" ]]; then
 fi
  
 # unmount
-umount /mnt/{boot,}
-swapoff ${device}p2
+#umount /mnt/{boot,}
+#swapoff ${device}p2
 
 # Set Flag boot BIOS for GTP
-sgdisk ${device} --attributes=:1:set:2
+#sgdisk ${device} --attributes=:1:set:2
  
 echo "Done! Unmount the CD image from the VM, then type 'reboot'."
 echo -e "\033[0;31m/!\ Password for root authentification is 'azer'\033[0m"
+
+
+arch-chroot /mnt /bin/bash
 
